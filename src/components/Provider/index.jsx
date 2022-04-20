@@ -1,24 +1,33 @@
 import React, { createContext, useContext, useCallback, useMemo, useReducer } from 'react';
-import axios from 'axios';
+
+import cloneDeep from 'lodash.clonedeep';
 
 const reducer = (state, action) => {
-
+    const newState = cloneDeep(state);
     switch (action.type) {
         case 'init':
-            state.pending = true;
-            state.error = null;
-            return state;
-        case 'post':
-            state.pending = false;
-            state.geolocation = action.payload;
-            state.geolocation.push(action.payload)
-            state.geolocation.matches++;
-            return state;
+            newState.pending = true;
+            newState.error = null;
+            return newState;
+        case 'query':
+            newState.pending = false;
+            let json = action.payload.json;
+            const page = action.payload.page;
+            if (page.offset > 0) {
+                json.data = state.pages.data.concat(json.data);
+            }
+            newState.pages = json;
+            newState.matches = json.matches;
+            return newState;
+        case 'get':
+            newState.pending = false;
+            newState.geolocation = action.payload;
+            return newState;
         case 'error':
             console.error(action.error);
-            state.pending = false;
-            state.error = action.error.message;
-            return state;
+            newState.pending = false;
+            newState.error = action.error.message;
+            return newState;
         default:
             throw new Error('Unknown action type in entity reducer');
     }
@@ -26,7 +35,12 @@ const reducer = (state, action) => {
 
 const initialState = {
     pending: false,
+    geolocations: {
+        data: [],
+        matches: 0
+    },
     geolocation: {
+        id: '',
         country: '',
         countryCode: '',
         ipAddress: '',
@@ -37,7 +51,8 @@ const initialState = {
 };
 
 const Context = createContext(initialState);
-export const Provider = ({ children }) => {
+export const Provider = (props) => {
+    const { children } = props
     const [state, dispatch] = useReducer(reducer, initialState);
     return (
         <Context.Provider value={{ state, dispatch }}>
@@ -46,39 +61,39 @@ export const Provider = ({ children }) => {
     );
 };
 
+const reqInit = {
+    method: "GET",
+    headers: {
+        Accept: 'application/ json',
+        'Content-Type': 'application/json',
+    },
+}
+
+const url = `${import.meta.env.VITE_BASE_URL}/geo`
+
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
 
-    const create = useCallback(async (geolocation) => {
-        const reqInit = {
-            method: "POST",
-            headers: {
-                Accept: 'application/ json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(geolocation)
-        }
-        const resp = await fetch(`${import.meta.env.VITE_BASE_URL}/geo`, reqInit);
+    const queryGeo = async ({ setGeolocation }) => {
+        const resp = await fetch(url, reqInit);
         if (resp.ok) {
-            dispatch({ type: 'post', payload: await resp.json() });
-            console.log(state)
-        } else {
-            dispatch({ type: 'error', error: resp.Error, meta: { method: 'post' } });
+            const json = await resp.json();
+            setGeolocation(json);
         }
+    };
 
+    const fetchGeo = useCallback(async (id) => {
+        const resp = await fetch(`${url}/${id}`, reqInit);
+        if (resp.ok) {
+            dispatch({ type: 'get', payload: await resp.json() });
+        } else {
+            dispatch({ type: 'error', error: resp.Error, meta: { method: 'get' } });
+        }
     }, [dispatch]);
 
-    const getData = async ({ setIP }) => {
-        const res = await axios.get(import.meta.env.VITE_API)
-        if (navigator.brave) {
-            null
-        }
-        setIP(res.data)
-
-    }
     const actions = useMemo(() => {
-        return { create, getData }
-    }, [create, getData]);
+        return { queryGeo, fetchGeo }
+    }, [queryGeo, fetchGeo]);
 
     return [state, actions];
 }

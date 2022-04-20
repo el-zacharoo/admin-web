@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Outline } from '@/components/Outline';
 import { theme } from '@/theme';
 import Viewport from '@/Viewport';
+import { DataFormat } from '@/views/DataFormat';
 
 
 export const App = () => {
@@ -18,7 +19,7 @@ export const App = () => {
         <Viewport>
           <Suspense fallback={<Outline visible={true} />}>
             <Routes>
-              <Route exact path="/" element={<Views />} />
+              <Route exact path="/" element={<DataFormat />} />
             </Routes>
           </Suspense>
         </Viewport>
@@ -28,9 +29,3 @@ export const App = () => {
 }
 
 export default App
-
-const Views = () => {
-  return (
-    <p>Hello World</p>
-  )
-}
