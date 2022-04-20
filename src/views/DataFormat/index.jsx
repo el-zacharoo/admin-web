@@ -32,6 +32,7 @@ const Data = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>IP Address</TableCell>
+                            <TableCell>Device</TableCell>
                             <TableCell align="right">Page</TableCell>
                             <TableCell align="right">Country</TableCell>
                         </TableRow>
@@ -42,6 +43,7 @@ const Data = () => {
                                 <TableCell>
                                     {item.ipAddress}
                                 </TableCell>
+                                <TableCell>{item.platform}</TableCell>
                                 <TableCell align="right">
                                     {item.page}
                                 </TableCell>
@@ -50,7 +52,6 @@ const Data = () => {
                                 </TableCell>
                             </TableRow>
                         )}
-
                     </TableBody>
                     {geolocation.data.length}
                 </Table >
