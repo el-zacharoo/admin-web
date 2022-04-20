@@ -15,7 +15,7 @@ const Data = () => {
     const [geolocation, setGeolocation] = useState([]);
     const [, { queryGeo }] = useApi();
     useEffect(() => {
-        queryGeo({ setGeolocation: setGeolocation })
+        queryGeo({ set: setGeolocation })
     }, []);
 
     return (

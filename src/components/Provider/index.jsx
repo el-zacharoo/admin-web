@@ -61,6 +61,7 @@ export const Provider = (props) => {
     );
 };
 
+const url = `${import.meta.env.VITE_BASE_URL}/geo`
 const reqInit = {
     method: "GET",
     headers: {
@@ -69,27 +70,24 @@ const reqInit = {
     },
 }
 
-const url = `${import.meta.env.VITE_BASE_URL}/geo`
-
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
 
-    const queryGeo = async ({ setGeolocation }) => {
+    const queryGeo = async ({ set }) => {
         const resp = await fetch(url, reqInit);
         if (resp.ok) {
             const json = await resp.json();
-            setGeolocation(json);
+            set(json);
         }
     };
 
-    const fetchGeo = useCallback(async (id) => {
-        const resp = await fetch(`${url}/${id}`, reqInit);
+    const fetchGeo = async ({ set }) => {
+        const resp = await fetch(url, reqInit);
         if (resp.ok) {
-            dispatch({ type: 'get', payload: await resp.json() });
-        } else {
-            dispatch({ type: 'error', error: resp.Error, meta: { method: 'get' } });
+            const json = await resp.json();
+            set(json);
         }
-    }, [dispatch]);
+    };
 
     const actions = useMemo(() => {
         return { queryGeo, fetchGeo }
