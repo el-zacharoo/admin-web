@@ -82,7 +82,7 @@ export const useApi = () => {
     };
 
     const fetchGeo = async ({ set }) => {
-        const resp = await fetch(url, reqInit);
+        const resp = await fetch(`${url}/${id}`, reqInit);
         if (resp.ok) {
             const json = await resp.json();
             set(json);
