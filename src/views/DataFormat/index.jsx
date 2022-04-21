@@ -11,16 +11,16 @@ import TablePagination from '@mui/material/TablePagination';
 import { Time } from '@/components/Time';
 import { useApi } from '@/components/Provider';
 
-const pageSize = [5, 10, 25];
-const now = new Date().toISOString()
-const style = { backgroundColor: 'background.paper' }
+const pageSize = [10, 20, 30];
+const now = new Date().toISOString();
+const style = { backgroundColor: 'background.paper' };
 const categories = [
     { name: 'IP Address', align: 'left' },
     { name: 'Device', align: 'left' },
     { name: 'Viewed', align: 'left' },
     { name: 'Page', align: 'right' },
     { name: 'Country', align: 'right' },
-]
+];
 
 export const DataFormat = () => {
     const [page, setPage] = useState(0);
@@ -33,7 +33,7 @@ export const DataFormat = () => {
     }, [queryData, page]);
 
     const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(parseInt(e.target.value, pageSize[1]));
+        setRowsPerPage(+e.target.value);
         setPage(0);
     };
 
@@ -74,6 +74,7 @@ export const DataFormat = () => {
             </Table >
             <TablePagination
                 rowsPerPageOptions={pageSize}
+                sx={style}
                 component="div"
                 count={row.length}
                 rowsPerPage={rowsPerPage}
