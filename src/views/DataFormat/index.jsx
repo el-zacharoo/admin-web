@@ -1,46 +1,46 @@
 import React, { useEffect, useState } from 'react';
 
-import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
-import TableFooter from '@mui/material/TableFooter';
 import TableHead from '@mui/material/TableHead';
 
-import { useApi, Provider } from '@/components/Provider';
-
-export const DataFormat = () => {
-    return (
-        <Provider>
-            <Data />
-        </Provider>
-    )
-}
+import { TablePager } from '@/components/TablePager';
+import { Time } from '@/components/Time';
+import { useApi } from '@/components/Provider';
+import { Paper } from '@mui/material';
 
 const pageSize = 10;
+const now = new Date().toISOString()
+const categories = [
+    { name: 'IP Address', align: 'left' },
+    { name: 'Device', align: 'left' },
+    { name: 'Viewed', align: 'left' },
+    { name: 'Page', align: 'right' },
+    { name: 'Country', align: 'right' },
+]
 
-const Data = () => {
+export const DataFormat = () => {
     const [page, setPage] = useState({ offset: 0, limit: pageSize });
-    const [{ geolocations }, { queryGeo }] = useApi();
+    const [{ geolocations }, { queryData }] = useApi();
     useEffect(() => {
-        queryGeo(page)
-    }, [queryGeo, page]);
+        queryData(page)
+    }, [queryData, page]);
 
     const handlePage = () => {
         setPage(prev => ({ ...prev, offset: prev.offset + pageSize }))
     };
-    console.log(geolocations)
+
     return (
-        <TableContainer>
+        <TableContainer sx={{ px: 1 }} component={Paper}>
             <Table >
                 <TableHead>
                     <TableRow>
-                        <TableCell>IP Address</TableCell>
-                        <TableCell>Device</TableCell>
-                        <TableCell align="right">Page</TableCell>
-                        <TableCell align="right">Country</TableCell>
+                        {categories.map((item, i) =>
+                            <TableCell key={i} align={item.align}>{item.name}</TableCell>
+                        )}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -50,6 +50,9 @@ const Data = () => {
                                 {item.ipAddress}
                             </TableCell>
                             <TableCell>{item.platform}</TableCell>
+                            <TableCell>
+                                {Time({ elapsed: Date.parse(now) - Date.parse(item.date) })}
+                            </TableCell>
                             <TableCell align="right">
                                 {item.page}
                             </TableCell>
@@ -59,37 +62,12 @@ const Data = () => {
                         </TableRow>
                     )}
                 </TableBody>
-                <TablePager colSpan={4} count={geolocations.data.length} total={geolocations.matches}
+                <TablePager colSpan={5} count={geolocations.data.length} total={geolocations.matches}
                     onPage={() => handlePage()}
                 />
             </Table >
-        </TableContainer>
+        </TableContainer >
 
     )
 }
 export default DataFormat;
-
-const TablePager = ({ count, total, colSpan, onPage }) => {
-    const hasMore = total > count;
-
-    return (
-        <>
-            {count > 0 &&
-                <TableFooter>
-                    <TableRow>
-                        <TableCell colSpan={colSpan} align="center" sx={{ borderBottom: 'none' }}>
-                            {count} of {total || count}
-                        </TableCell>
-                    </TableRow>
-                    {hasMore &&
-                        <TableRow>
-                            <TableCell colSpan={colSpan} align="center">
-                                <Button color="secondary" variant="contained" onClick={onPage}>Load More</Button>
-                            </TableCell>
-                        </TableRow>
-                    }
-                </TableFooter>
-            }
-        </>
-    );
-}

@@ -45,7 +45,8 @@ const initialState = {
         countryCode: '',
         ipAddress: '',
         platform: '',
-        page: ''
+        page: '',
+        date: ''
     },
     error: null,
 };
@@ -73,7 +74,7 @@ const reqInit = {
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
 
-    const queryGeo = useCallback(async (page = { limit: 10 }) => {
+    const queryData = useCallback(async (page = { limit: 10 }) => {
         const resp = await fetch(`${url}?lmt=${page.limit}&off=${page.offset}`, reqInit);
         if (resp.ok) {
             dispatch({ type: 'query', payload: { json: await resp.json(), page: page } });
@@ -82,8 +83,8 @@ export const useApi = () => {
         }
     }, [dispatch]);
 
-    const fetchGeo = useCallback(async (id) => {
-        const resp = await fetch(`${url} / ${id}`, reqInit);
+    const fetchData = useCallback(async (id) => {
+        const resp = await fetch(`${url}/${id}`, reqInit);
         if (resp.ok) {
             dispatch({ type: 'get', payload: await resp.json() });
         } else {
@@ -93,8 +94,8 @@ export const useApi = () => {
 
 
     const actions = useMemo(() => {
-        return { queryGeo, fetchGeo }
-    }, [queryGeo, fetchGeo]);
+        return { queryData, fetchData }
+    }, [queryData, fetchData]);
 
     return [state, actions];
 }
