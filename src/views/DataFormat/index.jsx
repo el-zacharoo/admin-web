@@ -6,12 +6,12 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
 
-import { TablePager } from '@/components/TablePager';
 import { Time } from '@/components/Time';
 import { useApi } from '@/components/Provider';
 
-const pageSize = 10;
+const pageSize = [5, 10, 25];
 const now = new Date().toISOString()
 const style = { backgroundColor: 'background.paper' }
 const categories = [
@@ -23,15 +23,24 @@ const categories = [
 ]
 
 export const DataFormat = () => {
-    const [page, setPage] = useState({ offset: 0, limit: pageSize });
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(pageSize[0]);
     const [{ geolocations }, { queryData }] = useApi();
+    const row = geolocations.data;
+
     useEffect(() => {
         queryData(page)
     }, [queryData, page]);
 
-    const handlePage = () => {
-        setPage(prev => ({ ...prev, offset: prev.offset + pageSize }))
+    const handleChangeRowsPerPage = (e) => {
+        setRowsPerPage(parseInt(e.target.value, pageSize[1]));
+        setPage(0);
     };
+
+    const handleChangePage = (e, newPage) => {
+        setPage(newPage);
+    };
+
 
     return (
         <TableContainer >
@@ -44,7 +53,7 @@ export const DataFormat = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody >
-                    {geolocations.data.map((item, i) =>
+                    {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, i) =>
                         <TableRow sx={{ px: 1 }} key={i}>
                             <TableCell >
                                 {item.ipAddress}
@@ -62,10 +71,16 @@ export const DataFormat = () => {
                         </TableRow>
                     )}
                 </TableBody>
-                <TablePager colSpan={5} count={geolocations.data.length} total={geolocations.matches}
-                    onPage={() => handlePage()}
-                />
             </Table >
+            <TablePagination
+                rowsPerPageOptions={pageSize}
+                component="div"
+                count={row.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </TableContainer >
 
     )
