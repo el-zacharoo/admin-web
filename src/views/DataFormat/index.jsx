@@ -23,24 +23,22 @@ const categories = [
 ];
 
 export const DataFormat = () => {
-    const [page, setPage] = useState({ offset: 0, limit: 10 });
-    const [rowsPerPage, setRowsPerPage] = useState(pageSize[0]);
+    const [page, setPage] = useState({ offset: 0, limit: pageSize[0] });
     const [{ geolocations }, { queryData }] = useApi();
-    const row = geolocations.data;
+    var row = geolocations.data;
+    var limit = page.limit
+    var offset = page.offset
 
     useEffect(() => {
-        queryData(page.offset)
-    }, [queryData, page]);
+        queryData(offset)
+    }, [queryData, offset]);
 
     const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(+e.target.value);
-        setPage(0);
+        setPage({ offset: 0, limit: +e.target.value });
     };
-
     const handleChangePage = (e, newPage) => {
-        setPage({ offset: +newPage });
+        setPage({ offset: +newPage, limit: limit });
     };
-
 
     return (
         <TableContainer >
@@ -53,7 +51,7 @@ export const DataFormat = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody >
-                    {row.slice(page.offset * rowsPerPage, page.offset * rowsPerPage + rowsPerPage).map((item, i) =>
+                    {row.slice(offset * limit, offset * limit + limit).map((item, i) =>
                         <TableRow sx={{ px: 1 }} key={i}>
                             <TableCell >
                                 {item.ipAddress}
@@ -77,8 +75,8 @@ export const DataFormat = () => {
                 sx={style}
                 component="div"
                 count={row.length}
-                rowsPerPage={rowsPerPage}
-                page={page.offset}
+                rowsPerPage={limit}
+                page={offset}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
