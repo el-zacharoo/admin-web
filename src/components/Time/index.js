@@ -32,27 +32,27 @@ export const Time = ({ elapsed }) => {
 
     else if (elapsed < msPerMonth) {
         if (Math.round(elapsed / msPerDay) > 1) {
-            return 'approximately ' + Math.round(elapsed / msPerDay) + ' days ago';
+            return 'About ' + Math.round(elapsed / msPerDay) + ' days ago';
         }
         else {
-            return 'approximately ' + Math.round(elapsed / msPerDay) + ' day ago';
+            return 'About ' + Math.round(elapsed / msPerDay) + ' day ago';
         }
     }
 
     else if (elapsed < msPerYear) {
         if (Math.round(elapsed / msPerMonth) > 1) {
-            return 'approximately ' + Math.round(elapsed / msPerMonth) + ' months ago';
+            return 'About ' + Math.round(elapsed / msPerMonth) + ' months ago';
         }
         else {
-            return 'approximately ' + Math.round(elapsed / msPerMonth) + ' month ago';
+            return 'About ' + Math.round(elapsed / msPerMonth) + ' month ago';
         }
     }
 
     else {
         if (Math.round(elapsed / msPerYear) > 1) {
-            return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
+            return 'About ' + Math.round(elapsed / msPerYear) + ' years ago';
         } else {
-            return 'approximately ' + Math.round(elapsed / msPerYear) + ' year ago';
+            return 'About ' + Math.round(elapsed / msPerYear) + ' year ago';
         }
     }
 }

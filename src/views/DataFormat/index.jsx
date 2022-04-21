@@ -25,9 +25,9 @@ const categories = [
 export const DataFormat = () => {
     const [page, setPage] = useState({ offset: 0, limit: pageSize[0] });
     const [{ geolocations }, { queryData }] = useApi();
-    var row = geolocations.data;
-    var limit = page.limit
-    var offset = page.offset
+    let row = geolocations.data;
+    let limit = page.limit
+    let offset = page.offset
 
     useEffect(() => {
         queryData(offset)
