@@ -14,9 +14,9 @@ const reducer = (state, action) => {
             let json = action.payload.json;
             const page = action.payload.page;
             if (page.offset > 0) {
-                json.data = state.pages.data.concat(json.data);
+                json.data = state.geolocations.data.concat(json.data);
             }
-            newState.pages = json;
+            newState.geolocations = json;
             newState.matches = json.matches;
             return newState;
         case 'get':
@@ -73,21 +73,24 @@ const reqInit = {
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
 
-    const queryGeo = async ({ set }) => {
+    const queryGeo = useCallback(async (page = { limit: 10 }) => {
         const resp = await fetch(url, reqInit);
         if (resp.ok) {
-            const json = await resp.json();
-            set(json);
+            dispatch({ type: 'query', payload: { json: await resp.json(), page: page } });
+        } else {
+            dispatch({ type: 'error', error: resp.Error, meta: { method: 'query' } });
         }
-    };
+    }, [dispatch]);
 
-    const fetchGeo = async ({ set }) => {
+    const fetchGeo = useCallback(async (id) => {
         const resp = await fetch(`${url}/${id}`, reqInit);
         if (resp.ok) {
-            const json = await resp.json();
-            set(json);
+            dispatch({ type: 'get', payload: await resp.json() });
+        } else {
+            dispatch({ type: 'error', error: resp.Error, meta: { method: 'get' } });
         }
-    };
+    }, [dispatch]);
+
 
     const actions = useMemo(() => {
         return { queryGeo, fetchGeo }

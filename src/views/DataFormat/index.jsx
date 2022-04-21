@@ -17,45 +17,49 @@ export const DataFormat = () => {
     )
 }
 
-const Data = () => {
-    const [geolocation, setGeolocation] = useState([]);
-    const [, { queryGeo }] = useApi();
-    useEffect(() => {
-        queryGeo({ set: setGeolocation })
+const pageSize = 12;
 
-    }, []);
+const Data = () => {
+    const [page, setPage] = useState({ offset: 0, limit: pageSize });
+    const [{ geolocations }, { queryGeo }] = useApi();
+    useEffect(() => {
+        queryGeo(page)
+    }, [queryGeo, page]);
+
+    const handlePage = () => {
+        setPage(prev => ({ ...prev, offset: prev.offset + pageSize }))
+    };
 
     return (
         <TableContainer>
-            {geolocation.data &&
-                <Table >
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>IP Address</TableCell>
-                            <TableCell>Device</TableCell>
-                            <TableCell align="right">Page</TableCell>
-                            <TableCell align="right">Country</TableCell>
+            <Table >
+                <TableHead>
+                    <TableRow>
+                        <TableCell>IP Address</TableCell>
+                        <TableCell>Device</TableCell>
+                        <TableCell align="right">Page</TableCell>
+                        <TableCell align="right">Country</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {geolocations.data.map((item, i) =>
+                        <TableRow key={i}>
+                            <TableCell>
+                                {item.ipAddress}
+                            </TableCell>
+                            <TableCell>{item.platform}</TableCell>
+                            <TableCell align="right">
+                                {item.page}
+                            </TableCell>
+                            <TableCell align="right">
+                                {item.country}
+                            </TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {geolocation.data.map((item, i) =>
-                            <TableRow key={i}>
-                                <TableCell>
-                                    {item.ipAddress}
-                                </TableCell>
-                                <TableCell>{item.platform}</TableCell>
-                                <TableCell align="right">
-                                    {item.page}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {item.country}
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                    {geolocation.data.length}
-                </Table >
-            }
+                    )}
+                </TableBody>
+                {/* {geolocation.data.length} */}
+            </Table >
+
         </TableContainer>
 
     )
