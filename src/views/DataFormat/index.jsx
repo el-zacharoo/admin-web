@@ -10,10 +10,10 @@ import TableHead from '@mui/material/TableHead';
 import { TablePager } from '@/components/TablePager';
 import { Time } from '@/components/Time';
 import { useApi } from '@/components/Provider';
-import { Paper } from '@mui/material';
 
 const pageSize = 10;
 const now = new Date().toISOString()
+const style = { backgroundColor: 'background.paper' }
 const categories = [
     { name: 'IP Address', align: 'left' },
     { name: 'Device', align: 'left' },
@@ -34,19 +34,19 @@ export const DataFormat = () => {
     };
 
     return (
-        <TableContainer sx={{ px: 1 }} component={Paper}>
-            <Table >
+        <TableContainer >
+            <Table>
                 <TableHead>
                     <TableRow>
                         {categories.map((item, i) =>
-                            <TableCell key={i} align={item.align}>{item.name}</TableCell>
+                            <TableCell sx={style} key={i} align={item.align}>{item.name}</TableCell>
                         )}
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody >
                     {geolocations.data.map((item, i) =>
-                        <TableRow key={i}>
-                            <TableCell>
+                        <TableRow sx={{ px: 1 }} key={i}>
+                            <TableCell >
                                 {item.ipAddress}
                             </TableCell>
                             <TableCell>{item.platform}</TableCell>
