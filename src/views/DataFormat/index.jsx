@@ -69,7 +69,7 @@ export const DataFormat = () => {
                         </TableRow>
                     )}
                 </TableBody>
-            </Table >
+            </Table>
             <TablePagination
                 rowsPerPageOptions={pageSize}
                 sx={style}
@@ -81,7 +81,6 @@ export const DataFormat = () => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </TableContainer >
-
     )
 }
 export default DataFormat;

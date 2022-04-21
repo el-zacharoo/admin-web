@@ -74,7 +74,7 @@ const reqInit = {
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
 
-    const queryData = useCallback(async (page = { limit: 10 }) => {
+    const queryData = useCallback(async (page = limit) => {
         const resp = await fetch(`${url}?lmt=${page.limit}&off=${page.offset}`, reqInit);
         if (resp.ok) {
             dispatch({ type: 'query', payload: { json: await resp.json(), page: page } });
