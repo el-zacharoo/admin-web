@@ -29,13 +29,12 @@ export const DataFormat = () => {
     const limit = page.limit > row.length ? page.limit : page.limit
     const offset = page.offset
 
-
     useEffect(() => {
         queryData(offset)
     }, [queryData, offset]);
 
     const handleChangeRowsPerPage = (e) => {
-        setPage({ offset: 0, limit: +e.target.value });
+        setPage({ offset: offset, limit: +e.target.value });
     };
     const handleChangePage = (e, newPage) => {
         setPage({ offset: +newPage, limit: limit });
