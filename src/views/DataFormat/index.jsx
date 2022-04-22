@@ -25,9 +25,10 @@ const categories = [
 export const DataFormat = () => {
     const [page, setPage] = useState({ offset: 0, limit: pageSize[0] });
     const [{ geolocations }, { queryData }] = useApi();
-    let row = geolocations.data;
-    let limit = page.limit
-    let offset = page.offset
+    const row = geolocations.data;
+    const limit = page.limit > row.length ? page.limit : page.limit
+    const offset = page.offset
+
 
     useEffect(() => {
         queryData(offset)
@@ -50,25 +51,27 @@ export const DataFormat = () => {
                         )}
                     </TableRow>
                 </TableHead>
-                <TableBody >
-                    {row.slice(offset * limit, offset * limit + limit).map((item, i) =>
-                        <TableRow sx={{ px: 1 }} key={i}>
-                            <TableCell >
-                                {item.ipAddress}
-                            </TableCell>
-                            <TableCell>{item.platform}</TableCell>
-                            <TableCell>
-                                {Time({ elapsed: Date.parse(now) - Date.parse(item.date) })}
-                            </TableCell>
-                            <TableCell align="right">
-                                {item.page}
-                            </TableCell>
-                            <TableCell align="right">
-                                {item.country}
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {row &&
+                    <TableBody >
+                        {row.slice(offset * limit, offset * limit + limit).map((item, i) =>
+                            <TableRow sx={{ px: 1 }} key={i}>
+                                <TableCell >
+                                    {item.ipAddress}
+                                </TableCell>
+                                <TableCell>{item.platform}</TableCell>
+                                <TableCell>
+                                    {Time({ elapsed: Date.parse(now) - Date.parse(item.date) })}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {item.page}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {item.country}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                }
             </Table>
             <TablePagination
                 rowsPerPageOptions={pageSize}
