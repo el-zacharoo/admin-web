@@ -34,7 +34,7 @@ export const DataFormat = () => {
     }, [queryData, offset]);
 
     const handleChangeRowsPerPage = (e) => {
-        setPage({ offset: offset, limit: +e.target.value });
+        setPage({ offset: 0, limit: +e.target.value });
     };
     const handleChangePage = (e, newPage) => {
         setPage({ offset: +newPage, limit: limit });

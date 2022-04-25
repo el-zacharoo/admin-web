@@ -56,4 +56,5 @@ export const Time = ({ elapsed }) => {
         }
     }
 }
+
 export default Time;
