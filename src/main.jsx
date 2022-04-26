@@ -9,7 +9,6 @@ ReactDOM.render(
       domain="practice-tenant.au.auth0.com"
       clientId="JKv5m5C6LYyIaObQMvgJ8tn4fBnvHDFR"
       redirectUri={window.location.origin}
-      audience="admin-web.com"
     >
       <App />
     </Auth0Provider>
