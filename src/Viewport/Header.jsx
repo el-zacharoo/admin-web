@@ -1,20 +1,18 @@
 import React from 'react';
 
 import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
-import { Avatar } from '@mui/material';
-
 
 
 export const Header = () => {
     const { user } = useAuth0()
-    console.log(user)
 
     return (
         <AppBar elevation={0} color="primary" position="relative" sx={{ padding: 1 }}>
