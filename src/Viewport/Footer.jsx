@@ -19,7 +19,7 @@ const Copyright = () => {
     return (
         <Typography variant="body2" color="info.main">
             {'Copyright © '}
-            <Link underline="none" sx={{ color: "info.main" }} href="https://https://zachs-website.netlify.app/" >
+            <Link underline="none" sx={{ color: "info.main" }} href="https://zachs-website.netlify.app/" >
                 {import.meta.env.VITE_APP_NAME}
             </Link>{' '}
             {new Date().getFullYear()}
