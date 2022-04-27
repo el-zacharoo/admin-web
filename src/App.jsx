@@ -11,7 +11,6 @@ import { theme } from '@/theme';
 import Viewport from '@/Viewport';
 import { DataFormat } from '@/views/DataFormat';
 
-
 export const App = withAuthenticationRequired(() => {
 
   return (
