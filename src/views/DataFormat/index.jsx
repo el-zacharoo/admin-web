@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import Table from '@mui/material/Table';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-
-import { Time } from '@/components/Time';
+import TableData from './DataTable'
 import { useApi } from '@/components/Provider';
 
 const pageSize = [10, 20, 30];
-const now = new Date().toISOString();
-const style = { backgroundColor: 'background.paper' };
+
 const categories = [
     { name: 'IP Address', align: 'left' },
     { name: 'Device', align: 'left' },
@@ -23,66 +14,22 @@ const categories = [
 ];
 
 export const DataFormat = () => {
-    const [page, setPage] = useState({ offset: 0, limit: pageSize[0] });
     const [{ geolocations }, { queryData }] = useApi();
     const row = geolocations.data;
-    const limit = page.limit > row.length ? page.limit : page.limit
-    const offset = page.offset
 
     useEffect(() => {
-        queryData(offset)
-    }, [queryData, offset]);
+        queryData(pageSize[0])
+    }, [queryData, pageSize[0]]);
 
-    const handleChangeRowsPerPage = (e) => {
-        setPage({ offset: 0, limit: +e.target.value });
-    };
-    const handleChangePage = (e, newPage) => {
-        setPage({ offset: +newPage, limit: limit });
-    };
+    const counts = {};
+    row.map(i => i.countrycode).forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+    console.log(counts)
 
     return (
-        <TableContainer >
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        {categories.map((item, i) =>
-                            <TableCell sx={style} key={i} align={item.align}>{item.name}</TableCell>
-                        )}
-                    </TableRow>
-                </TableHead>
-                {row &&
-                    <TableBody >
-                        {row.slice(offset * limit, offset * limit + limit).map((item, i) =>
-                            <TableRow sx={{ px: 1 }} key={i}>
-                                <TableCell >
-                                    {item.ipAddress}
-                                </TableCell>
-                                <TableCell>{item.platform}</TableCell>
-                                <TableCell>
-                                    {Time({ elapsed: Date.parse(now) - Date.parse(item.date) })}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {item.page}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {item.country}
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                }
-            </Table>
-            <TablePagination
-                rowsPerPageOptions={pageSize}
-                sx={style}
-                component="div"
-                count={row.length}
-                rowsPerPage={limit}
-                page={offset}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </TableContainer >
+        <>
+            <TableData pageSize={pageSize} array={{ head: categories, body: row }} />
+        </>
+
     )
 }
 export default DataFormat;

@@ -43,7 +43,7 @@ const initialState = {
     geolocation: {
         id: '',
         country: '',
-        countryCode: '',
+        countrycode: '',
         ipAddress: '',
         platform: '',
         page: '',
