@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useCallback, useMemo, useReducer } from 'react';
 
+import { useAuth0 } from "@auth0/auth0-react";
 import cloneDeep from 'lodash.clonedeep';
 
 const reducer = (state, action) => {
@@ -63,34 +64,47 @@ export const Provider = (props) => {
 };
 
 const url = `${import.meta.env.VITE_BASE_URL}/geo`
-const reqInit = {
-    method: "GET",
-    headers: {
-        Accept: 'application/ json',
-        'Content-Type': 'application/json',
-    },
-}
+
 
 export const useApi = () => {
     const { state, dispatch } = useContext(Context);
-
+    const { getAccessTokenSilently } = useAuth0();
     const queryData = useCallback(async (page = limit) => {
+        const reqInit = {
+            method: "GET",
+            headers: {
+                Accept: 'application/ json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + await getAccessTokenSilently()
+            },
+        }
+        console.log(await getAccessTokenSilently())
         const resp = await fetch(`${url}?lmt=${page.limit}&off=${page.offset}`, reqInit);
+
         if (resp.ok) {
             dispatch({ type: 'query', payload: { json: await resp.json(), page: page } });
+
         } else {
             dispatch({ type: 'error', error: resp.Error, meta: { method: 'query' } });
         }
-    }, [dispatch]);
+    }, [getAccessTokenSilently, dispatch]);
 
     const fetchData = useCallback(async (id) => {
+        const reqInit = {
+            method: "GET",
+            headers: {
+                Accept: 'application/ json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + await getAccessTokenSilently()
+            },
+        }
         const resp = await fetch(`${url}/${id}`, reqInit);
         if (resp.ok) {
             dispatch({ type: 'get', payload: await resp.json() });
         } else {
             dispatch({ type: 'error', error: resp.Error, meta: { method: 'get' } });
         }
-    }, [dispatch]);
+    }, [getAccessTokenSilently, dispatch]);
 
 
     const actions = useMemo(() => {
