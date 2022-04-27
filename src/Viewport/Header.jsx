@@ -18,13 +18,12 @@ export const Header = () => {
     const { user, logout } = useAuth0()
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = (e) => {
+        setAnchorEl(e.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-
 
     return (
         <AppBar elevation={0} color="primary" position="relative" sx={{ padding: 1 }}>
@@ -42,11 +41,6 @@ export const Header = () => {
             </Toolbar>
         </AppBar>
     )
-}
-
-Header.propTypes = {
-    open: PropTypes.bool,
-    onClick: PropTypes.func,
 }
 
 export default Header;
