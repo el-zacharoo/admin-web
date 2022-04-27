@@ -78,7 +78,6 @@ export const useApi = () => {
                 Authorization: 'Bearer ' + await getAccessTokenSilently()
             },
         }
-        console.log(await getAccessTokenSilently())
         const resp = await fetch(`${url}?lmt=${page.limit}&off=${page.offset}`, reqInit);
 
         if (resp.ok) {
