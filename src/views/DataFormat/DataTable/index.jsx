@@ -13,10 +13,11 @@ import { Time } from '@/components/Time';
 const now = new Date().toISOString();
 const style = { backgroundColor: 'background.paper' };
 
-export const DataTable = ({ array, pageSize }) => {
+export const DataTable = (props) => {
+    const { array, pageSize } = props;
     const [page, setPage] = useState({ offset: 0, limit: pageSize[0] });
-    const limit = page.limit > array.body.length ? page.limit : page.limit
-    const offset = page.offset
+    const limit = page.limit > array.body.length ? page.limit : page.limit;
+    const offset = page.offset;
 
     const handleChangeRowsPerPage = (e) => {
         setPage({ offset: 0, limit: +e.target.value });
